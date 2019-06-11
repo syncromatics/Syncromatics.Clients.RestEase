@@ -1,0 +1,19 @@
+language: csharp
+mono: none
+dotnet: 2.2.300
+os: linux
+git:
+  depth: false
+
+before_install:
+  - curl -sL https://github.com/annymsMthd/gogitver/releases/download/0.8.1/linux.tar.gz | tar zx
+
+before_script:
+  - git fetch -tv
+  - git fetch origin master:master
+
+script:
+  - dotnet restore || travis_terminate 1
+  # - dotnet test --no-restore tests/$testProjectName || travis_terminate 1
+  - dotnet pack --no-restore src/Syncromatics.Clients.RestEase --configuration Release /p:Version=$(./gogitver) || travis_terminate 1
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then dotnet nuget push src/Syncromatics.Clients.RestEase/bin/Release/*.nupkg -s https://www.nuget.org/api/v2/package -k $NUGET_API_KEY || travis_terminate 1; fi
