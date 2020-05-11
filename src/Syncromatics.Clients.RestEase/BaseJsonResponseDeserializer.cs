@@ -42,7 +42,7 @@ namespace Syncromatics.Clients.RestEase
 
             if (response.Content.Headers.ContentType.MediaType == "application/problem+json")
             {
-                var problemDetails = base.Deserialize<ProblemDetails>(content, response, info);
+                var problemDetails = base.Deserialize<ValidationProblemDetails>(content, response, info);
                 throw new ClientException<ProblemDetails>(problemDetails.Title, response.StatusCode, problemDetails);
             }
 
